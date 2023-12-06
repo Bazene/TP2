@@ -1,5 +1,5 @@
 <?php
-class carnet_adresse {
+class Contact {
     private $nom;
     private $adresse;
     private $numTel;
@@ -12,25 +12,38 @@ class carnet_adresse {
         $this->adresseMail = $adresseMail;
     }
 
-    public function enregistrerAbonne() {
+    public function enregistrerContact() {
         global $db;
-        $resultat = false;
 
-        $nom = $this->nom;
-        $adresse = $this->adresse;
-        $numTel = $this->numTel;
-        $adresseMail = $this->adresseMail;
-        $requete = "INSERT INTO carnet_adresse(noms, adresse, numTel, adresseMail) VALUES (:nom, :adresse, :numTel, :adresseMail)";
+        $query = 'INSERT INTO contacts(nom, adresse, numTel, adresseMail) VALUES (:nom, :adresse, :numTel, :adresseMail)';
+        $preparequery = $db->prepare($query); // Preparer la requete pour l'execution
 
-        $stetment = $db->prepare($requete); // Preparer la requete pour l'execution
-
-        $execution = $stetment->execute([
-                ':nom' => $nom,
-                ':adresse' => $adresse,
-                ':numTel' => $numTel,
-                ':adresseMail' => $adresseMail
+        $execution = $preparequery->execute([
+                ':nom' => $this->nom,
+                ':adresse' => $this->adresse,
+                ':numTel' => $this->numTel,
+                ':adresseMail' => $this->adresseMail
             ]
         );
+
+        return $execution ? true : false;
+    }
+
+    static function getContacts() {
+        global $db ;
+
+        $query = 'SELECT * FROM contacts WHERE 1';
+        $preparequery = $db->prepare($query);
+        $execution = $preparequery->execute([]);
+
+        $contacts = [];
+        if($execution) {
+            while($data=$preparequery->fetch()) {
+                $contact = new Contact($data['nom'], $data['adresse'], $data['numTel'], $data['adresseMail']);
+                array_push($contacts, $contact);
+            }
+            return $contacts;
+        }
     }
 
     /**

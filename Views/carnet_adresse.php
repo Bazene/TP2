@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Carnet d'adresse</title>
     <link rel="stylesheet" href="../Style/style.css">
 </head>
 <body>
+    
+    <?php include_once "../Controlleurs/c_getContacts.php"; ?>
+
     <section class="first_part">
         <h2 style="font-size: 20px;">Enregistrer contact dans votre carnet d'adresse</h2>
 
-        <form action="../Controllers/enregistrerContact.php" method="POST">
+        <form action="../Controlleurs/enregistrerContact.php" method="POST">
             <div class="inputs" style="display:flex; flex-direction:column;">
                     <input type="text" name="nom" placeholder="nom" required>
                     <input type="text" name="adresse" placeholder="adresse" required>
@@ -25,10 +28,30 @@
     </section>
 
     <section class="second_part">
-        <h2>Resultat</h2>
-        <div>
-            Bazene | Q.Himbi Av.Walikale | 0975149026 | serge@gmail.com
-        </div>
+        <h2>Contacts</h2>
+        <section class="enTete"> 
+            <p class='nom'>Nom</p>
+            <p class='adresse'>Adresse </p>
+            <p class='numTel'>Num Tel</p>
+            <p class='adresseMail'>Mail</p>
+        </section>
+
+        <?php 
+            $contacts = getContacts();
+            foreach($contacts as $contact) {
+                echo
+                "
+                    <section class='affichage' style='width:90%;'>
+                        <div>
+                            <p class='nom'>".$contact->getNom()."</p>
+                            <p class='adresse'>| ".$contact->getAdresse()."</p>
+                            <p class='numTel'>| ".$contact->getNumTel()."</p>
+                            <p class='adresseMail'>| ".$contact->getAdresseMail()."</p>
+                        </div>
+                    </section>
+                ";
+            }
+        ?>
     <section>
 </body>
 </html>
